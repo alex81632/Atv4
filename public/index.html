@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minha Aplicação</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Minha Aplicação</h1>
+
+    <h2>Visualização de Arquivos</h2>
+
+    <p>Lista os arquivos enviados</p>
+
+        <ul id="lista-arquivos">
+            <!-- Aqui os arquivos serão listados dinamicamente -->
+        </ul>
+
+    <h2>Upload de Arquivos</h2>
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="arquivo">Enviar Arquivo:</label>
+        <input type="file" id="arquivo" name="arquivo" required><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+
+    <h2>Proessamento de Formulário</h2>
+
+    <form action="/processar" method="get">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br>
+
+        <label for="idade">Idade:</label>
+        <input type="number" id="idade" name="idade" required><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+
+    <h2>Requisições AJAX</h2>
+
+    <p>Carrega os dados enviados pelo formulário</p>
+
+    <button id="carregar-json">Carregar JSON</button>
+    <p id="json-data"></p>
+
+    <script>
+        $(document).ready(function() {
+        $("#carregar-json").click(function() {
+            $.get("/dados-json", function(data) {
+            $("#json-data").text(JSON.stringify(data));
+            });
+        });
+        });
+        // Função para atualizar a lista de arquivos
+        function atualizarListaArquivos() {
+            console.log('Chamando atualizarListaArquivos'); // Adicione esta linha
+            $.get("/lista-arquivos", function(data) {
+                console.log('Recebendo dados'); // Adicione esta linha
+                // Limpa a lista de arquivos
+                $("#lista-arquivos").empty();
+                // Adiciona cada arquivo na lista
+                data.forEach(function(arquivo) {
+                    const link = "/uploads/" + arquivo;
+                    const linha = "<li><a href='" + link + "' target='_blank'>" + arquivo + "</a></li>";
+                    $("#lista-arquivos").append(linha);
+                });
+            });
+        }
+
+        // Chama a função de atualização de lista assim que a página carregar
+        atualizarListaArquivos();
+    </script>
+</body>
+</html>
